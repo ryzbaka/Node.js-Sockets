@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+</head>
+<body>
+    <h1 id= "server-message"></h1>
+    <button id = "send-message">Send message</button>
+    <script>
+        const socket = io.connect(
+            "http://"+document.domain+":"+location.port
+        )
+        socket.on("connect",()=>{
+            console.log("Client connected to server through websocket");
+        })
+        socket.on("disconnect",()=>console.log("Web socket disconnected from server."))
+        socket.on("server-event",(something)=>{
+            const serverMessage = document.querySelector("#server-message");
+            serverMessage.innerText = something.message;
+        })
+        const sendMessageButton = document.querySelector("#send-message");
+        sendMessageButton.addEventListener("click",()=>{
+            socket.emit("client-event",{message:"Client initiated event"})
+        })
+    </script>
+</body>
+</html>
